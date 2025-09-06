@@ -148,8 +148,7 @@
   });
 
   function resetLevel(hard=false){
-    const W = canvas.width / DPR;
-    const H = canvas.height / DPR;
+    const W = canvas.clientWidth, H = canvas.clientHeight;
     state.paddle.w = Math.max(56, Math.min(120, Math.round(W * 0.12)));
     state.paddle.h = 12; state.paddle.y = H - 28; state.paddle.x = (W - state.paddle.w)/2;
     state.ball.r = Math.max(6, Math.min(9, Math.round(W * 0.009)));
@@ -159,35 +158,12 @@
     state.ball.vx = Math.cos(ang) * base; 
     state.ball.vy = -Math.abs(Math.sin(ang) * base) || -base*0.8;
     if(hard){ state.ball.vx *= 1.08; state.ball.vy *= 1.08; }
-
     const cols = Math.max(6, Math.min(12, Math.floor(W / 60)));
-    let rows = 5 + Math.min(4, state.level);
-
-    const pad = 8; 
-
-    // const top = 48;   ← 固定値はやめる
-
-    let top = Math.floor(H * 0.08);  // 上マージンを小さくしてブロックを上に配置
-    if (top < 30) top = 30;  // 下限を30pxにしてさらに上げられるようにする
-
-    const left = 14; 
-    const right = 14;
+    const rows = 5 + Math.min(4, state.level);
+    const pad = 8; const top = 48; const left = 14; const right = 14;
     const areaW = W - left - right;
     const brickW = Math.floor((areaW - (cols-1)*pad) / cols);
-
-    // 画面の高さに応じてブロックの高さを調整
-    let brickH = Math.floor(H * 0.035);
-
-    // スマホ（幅480px以下）では行数と高さを抑える
-    if (W < 480) {
-      rows = Math.min(rows, 6);        // 最大6行まで
-      brickH = Math.floor(H * 0.025);  // 高さを控えめに
-      if (brickH < 10) brickH = 10;    // 下限10px
-    }
-
-    // 最終的な高さの上限も制限（大画面では大きくなりすぎないように）
-    brickH = Math.min(brickH, 24);
-  
+    const brickH = Math.max(16, Math.min(24, Math.floor(H * 0.035)));
     const palette = ["var(--brick1)","var(--brick2)","var(--brick3)","var(--brick4)"];
     state.bricks = [];
     for(let r=0;r<rows;r++){
@@ -198,25 +174,10 @@
         state.bricks.push({ x, y, w: brickW, h: brickH, hp, color: palette[r % palette.length]});
       }
     }
-  
-    // ▼▼ ブロック配置後にパドルとの距離をチェックし、必要なら上にずらす ▼▼
-    if (state.bricks.length > 0) {
-      const lastBrick = state.bricks[state.bricks.length - 1];
-      const paddleTop = state.paddle.y;
-      const minGap = 80; // パドルとの間隔を最低80px確保
-
-      const lastBrickBottom = lastBrick.y + lastBrick.h;
-      const overlap = (lastBrickBottom + minGap) - paddleTop;
-
-      if (overlap > 0) {
-        state.bricks.forEach(b => b.y -= overlap);
-      }
-    }
   }
 
   function resetBallAndPaddle(hard=false){
-    const W = canvas.width / DPR;
-    const H = canvas.height / DPR;
+    const W = canvas.clientWidth, H = canvas.clientHeight;
     state.paddle.w = Math.max(56, Math.min(120, Math.round(W * 0.12)));
     state.paddle.h = 12; state.paddle.y = H - 28; state.paddle.x = (W - state.paddle.w)/2;
     state.ball.r = Math.max(6, Math.min(9, Math.round(W * 0.009)));
@@ -421,14 +382,3 @@ startBtn.addEventListener('click', ()=>{
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
