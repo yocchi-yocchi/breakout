@@ -198,6 +198,20 @@
         state.bricks.push({ x, y, w: brickW, h: brickH, hp, color: palette[r % palette.length]});
       }
     }
+  
+    // ▼▼ ブロック配置後にパドルとの距離をチェックし、必要なら上にずらす ▼▼
+    if (state.bricks.length > 0) {
+      const lastBrick = state.bricks[state.bricks.length - 1];
+      const paddleTop = state.paddle.y;
+      const minGap = 80; // パドルとの間隔を最低80px確保
+
+      const lastBrickBottom = lastBrick.y + lastBrick.h;
+      const overlap = (lastBrickBottom + minGap) - paddleTop;
+
+      if (overlap > 0) {
+        state.bricks.forEach(b => b.y -= overlap);
+      }
+    }
   }
 
   function resetBallAndPaddle(hard=false){
@@ -407,6 +421,7 @@ startBtn.addEventListener('click', ()=>{
 </script>
 </body>
 </html>
+
 
 
 
