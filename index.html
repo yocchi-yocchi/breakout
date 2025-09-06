@@ -148,7 +148,7 @@
   });
 
   function resetLevel(hard=false){
-    const W = canvas.clientWidth, H = canvas.clientHeight;
+    const W = canvas.width / DPR, H = canvas.height / DPR;
     state.paddle.w = Math.max(56, Math.min(120, Math.round(W * 0.12)));
     state.paddle.h = 12; state.paddle.y = H - 28; state.paddle.x = (W - state.paddle.w)/2;
     state.ball.r = Math.max(6, Math.min(9, Math.round(W * 0.009)));
@@ -177,7 +177,7 @@
   }
 
   function resetBallAndPaddle(hard=false){
-    const W = canvas.clientWidth, H = canvas.clientHeight;
+    const W = canvas.width / DPR, H = canvas.height / DPR;
     state.paddle.w = Math.max(56, Math.min(120, Math.round(W * 0.12)));
     state.paddle.h = 12; state.paddle.y = H - 28; state.paddle.x = (W - state.paddle.w)/2;
     state.ball.r = Math.max(6, Math.min(9, Math.round(W * 0.009)));
@@ -382,4 +382,5 @@ startBtn.addEventListener('click', ()=>{
 </script>
 </body>
 </html>
+
 
