@@ -159,12 +159,30 @@
     state.ball.vx = Math.cos(ang) * base; 
     state.ball.vy = -Math.abs(Math.sin(ang) * base) || -base*0.8;
     if(hard){ state.ball.vx *= 1.08; state.ball.vy *= 1.08; }
+
     const cols = Math.max(6, Math.min(12, Math.floor(W / 60)));
-    const rows = 5 + Math.min(4, state.level);
-    const pad = 8; const top = 48; const left = 14; const right = 14;
+    let rows = 5 + Math.min(4, state.level);
+
+    const pad = 8; 
+    const top = 48; 
+    const left = 14; 
+    const right = 14;
     const areaW = W - left - right;
     const brickW = Math.floor((areaW - (cols-1)*pad) / cols);
-    const brickH = Math.max(16, Math.min(24, Math.floor(H * 0.035)));
+
+    // 画面の高さに応じてブロックの高さを調整
+    let brickH = Math.floor(H * 0.035);
+
+    // スマホ（幅480px以下）では行数と高さを抑える
+    if (W < 480) {
+      rows = Math.min(rows, 6);        // 最大6行まで
+      brickH = Math.floor(H * 0.025);  // 高さを控えめに
+      if (brickH < 10) brickH = 10;    // 下限10px
+    }
+
+    // 最終的な高さの上限も制限（大画面では大きくなりすぎないように）
+    brickH = Math.min(brickH, 24);
+  
     const palette = ["var(--brick1)","var(--brick2)","var(--brick3)","var(--brick4)"];
     state.bricks = [];
     for(let r=0;r<rows;r++){
@@ -384,6 +402,7 @@ startBtn.addEventListener('click', ()=>{
 </script>
 </body>
 </html>
+
 
 
 
