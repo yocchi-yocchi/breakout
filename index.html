@@ -167,8 +167,9 @@
 
     // const top = 48;   ← 固定値はやめる
 
-    let top = Math.floor(H * 0.12); // 画面高さの12%を上マージンにする
-    if (top < 40) top = 40;         // 下限40pxは確保
+    // 画面高さの「18%」を上マージンにする（従来の12%より上）
+    let top = Math.floor(H * 0.18);
+    if (top < 60) top = 60;   // 下限も40→60に引き上げる
  
     const left = 14; 
     const right = 14;
@@ -407,6 +408,7 @@ startBtn.addEventListener('click', ()=>{
 </script>
 </body>
 </html>
+
 
 
 
