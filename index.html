@@ -164,7 +164,12 @@
     let rows = 5 + Math.min(4, state.level);
 
     const pad = 8; 
-    const top = 48; 
+
+    // const top = 48;   ← 固定値はやめる
+
+    let top = Math.floor(H * 0.12); // 画面高さの12%を上マージンにする
+    if (top < 40) top = 40;         // 下限40pxは確保
+ 
     const left = 14; 
     const right = 14;
     const areaW = W - left - right;
@@ -402,6 +407,7 @@ startBtn.addEventListener('click', ()=>{
 </script>
 </body>
 </html>
+
 
 
 
