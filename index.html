@@ -388,33 +388,36 @@ function nextLevel(){
   canvas.addEventListener('touchend',   ()=> state.paddle.targetX = null);
 
 function togglePause() {
-  if (state.running) {
-    state.paused = !state.paused;
-    if (state.paused) {
-      pauseMsg.classList.remove('hidden');  // 一時停止中を表示
-    } else {
-      pauseMsg.classList.add('hidden');     // 再開したら隠す
-    }
+  if (!state.running) return;
+
+  state.paused = !state.paused;
+
+  if (state.paused) {
+    pauseMsg.classList.remove('hidden');  // 一時停止中を表示
+  } else {
+    pauseMsg.classList.add('hidden');     // 再開したら隠す
   }
 }
 
-// PC用クリック
+// PC用クリック（キャンバス）
 canvas.addEventListener('click', togglePause);
 
-// スマホ用タップ
+// スマホ用タップ（キャンバス）
 canvas.addEventListener('touchstart', (e) => {
   if (e.touches.length === 1) {
     togglePause();
   }
-}, {passive:true});
+}, { passive: true });
 
-// ★ 追加：オーバーレイをタップ／クリックしても再開できるようにする
-pauseMsg.addEventListener('click', togglePause);
+// 🟢 追加：pauseMsg 自体もタップ／クリックで再開できるようにする
+pauseMsg.addEventListener('click', () => {
+  if (state.paused) togglePause();
+});
 pauseMsg.addEventListener('touchstart', (e) => {
-  if (e.touches.length === 1) {
+  if (state.paused && e.touches.length === 1) {
     togglePause();
   }
-}, {passive:true});
+}, { passive: true });
 
 // スタートボタンの共通動作
 startBtn.addEventListener('click', ()=>{
