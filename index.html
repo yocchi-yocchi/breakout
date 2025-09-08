@@ -165,7 +165,7 @@
     if(hard){ state.ball.vx *= 1.08; state.ball.vy *= 1.08; }
     const cols = Math.max(6, Math.min(12, Math.floor(W / 60)));
     const rows = 5 + Math.min(4, state.level);
-    const pad = 8; const top = 48; const left = 14; const right = 14;
+    const pad = 8; const top = 72; const left = 14; const right = 14;
     const areaW = W - left - right;
     const brickW = Math.floor((areaW - (cols-1)*pad) / cols);
     const brickH = Math.max(16, Math.min(24, Math.floor(H * 0.035)));
@@ -387,3 +387,4 @@ startBtn.addEventListener('click', ()=>{
 </script>
 </body>
 </html>
+
