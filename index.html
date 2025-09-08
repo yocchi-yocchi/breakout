@@ -387,40 +387,47 @@ function nextLevel(){
   canvas.addEventListener('touchmove',  (e)=> setPointerControl(e.touches[0].clientX), {passive:true});
   canvas.addEventListener('touchend',   ()=> state.paddle.targetX = null);
 
+let lastTouchTime = 0;
+
 function togglePause() {
   if (!state.running) return;
 
   state.paused = !state.paused;
-
   if (state.paused) {
-    pauseMsg.classList.remove('hidden');  // 一時停止中を表示
+    pauseMsg.classList.remove('hidden');
   } else {
-    pauseMsg.classList.add('hidden');     // 再開したら隠す
+    pauseMsg.classList.add('hidden');
   }
 }
 
-// PC用クリック
-canvas.addEventListener('click', togglePause);
+// PC用クリック（タッチ直後の疑似クリックは無視する）
+canvas.addEventListener('click', (e) => {
+  if (Date.now() - lastTouchTime < 500) return; // 直近のタッチから0.5秒以内のクリックは無視
+  togglePause();
+});
 
-// スマホ用タップ（キャンバス → 実行中のみパドル操作）
+// スマホ用タップ
 canvas.addEventListener('touchstart', (e) => {
+  lastTouchTime = Date.now();
   if (!state.running) {
     startGame();
-  } else if (!state.paused) {
-    // 動作中のみパドル操作に使う
-    setPointerControl(e.touches[0].clientX);
+  } else if (state.paused) {
+    togglePause(); // 一時停止中なら再開
+  } else {
+    setPointerControl(e.touches[0].clientX); // 動作中ならパドル操作
   }
 }, { passive: true });
 
-// 🟢 pauseMsg のタップで再開（スマホ対応）
+// pauseMsg でも再開できるように
 pauseMsg.addEventListener('touchstart', (e) => {
+  lastTouchTime = Date.now();
   if (state.paused && e.touches.length === 1) {
     togglePause();
   }
 }, { passive: true });
 
-// PCでも pauseMsg 上でクリックしたら再開できるように
-pauseMsg.addEventListener('click', () => {
+pauseMsg.addEventListener('click', (e) => {
+  if (Date.now() - lastTouchTime < 500) return; 
   if (state.paused) togglePause();
 });
 
