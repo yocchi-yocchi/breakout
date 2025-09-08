@@ -387,17 +387,27 @@ function nextLevel(){
   canvas.addEventListener('touchmove',  (e)=> setPointerControl(e.touches[0].clientX), {passive:true});
   canvas.addEventListener('touchend',   ()=> state.paddle.targetX = null);
 
-// 📱 スマホ＆PC 共通：キャンバスタップで一時停止／再開
-canvas.addEventListener('click', () => {
+function togglePause() {
   if (state.running) {
     state.paused = !state.paused;
     if (state.paused) {
-      pauseMsg.classList.remove('hidden');  // 一時停止専用オーバーレイを表示
+      pauseMsg.classList.remove('hidden');  // 一時停止中を表示
     } else {
       pauseMsg.classList.add('hidden');     // 再開したら隠す
     }
   }
-});
+}
+
+// PC用クリック
+canvas.addEventListener('click', togglePause);
+
+// スマホ用タップ
+canvas.addEventListener('touchstart', (e) => {
+  // パドル操作用の処理と競合しないように最初の指1本タップだけ反応させる
+  if (e.touches.length === 1) {
+    togglePause();
+  }
+}, {passive:true});
 
 // スタートボタンの共通動作
 startBtn.addEventListener('click', ()=>{
