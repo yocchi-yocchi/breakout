@@ -403,7 +403,14 @@ canvas.addEventListener('click', togglePause);
 
 // スマホ用タップ
 canvas.addEventListener('touchstart', (e) => {
-  // パドル操作用の処理と競合しないように最初の指1本タップだけ反応させる
+  if (e.touches.length === 1) {
+    togglePause();
+  }
+}, {passive:true});
+
+// ★ 追加：オーバーレイをタップ／クリックしても再開できるようにする
+pauseMsg.addEventListener('click', togglePause);
+pauseMsg.addEventListener('touchstart', (e) => {
   if (e.touches.length === 1) {
     togglePause();
   }
