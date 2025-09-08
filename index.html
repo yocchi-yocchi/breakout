@@ -305,14 +305,6 @@ function startGame(initial=true){
   state.lastTime = performance.now();
   requestAnimationFrame(loop);
   beep('sine', 660, 0.08, 0.05);
-
-  // ★ ここは「再スタート用」のみにする
-  if(initial){
-    startBtn.onclick = () => {
-      if(actx.state === 'suspended'){ actx.resume(); }
-      startGame(true); // ← ここは「ゲームオーバー後のリスタート」でだけ必要
-    };
-  }
 }
 
 function levelUp(){
@@ -394,3 +386,4 @@ startBtn.addEventListener('click', ()=>{
 </script>
 </body>
 </html>
+
