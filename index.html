@@ -97,6 +97,14 @@
             </div>
           </div>
         </div>
+
+<div id="pauseMsg" class="overlay hidden">
+          <div class="panel">
+            <h2>一時停止中</h2>
+            <p>画面をタップすると再開します</p>
+          </div>
+        </div>
+
       </div>
       <div class="footer">埋め込みサイズに合わせて自動でリサイズされます。（推奨横幅 480px 以上）</div>
     </div>
@@ -114,6 +122,7 @@
   const livesEl = document.getElementById('lives');
   const ovTitle = document.getElementById('ov-title');
   const ovDesc = document.getElementById('ov-desc');
+  const pauseMsg = document.getElementById('pauseMsg');
 
   const DPR = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
   function resizeCanvas(){
@@ -349,7 +358,17 @@ function nextLevel(){
   window.addEventListener('keydown', (e)=>{
     if(e.code === 'ArrowLeft' || e.code === 'KeyA'){ state.input.left = true; }
     if(e.code === 'ArrowRight' || e.code === 'KeyD'){ state.input.right = true; }
-    if(e.code === 'Space'){ e.preventDefault(); if(state.running){ state.paused = !state.paused; if(!state.paused) hideOverlay(); else showOverlay('一時停止中', 'スペースで再開', false);} }
+    if(e.code === 'Space'){ 
+      e.preventDefault(); 
+      if(state.running){ 
+        state.paused = !state.paused; 
+        if(state.paused){
+          pauseMsg.classList.remove('hidden');
+        } else {
+          pauseMsg.classList.add('hidden');
+        }
+      } 
+}
   });
   window.addEventListener('keyup', (e)=>{
     if(e.code === 'ArrowLeft' || e.code === 'KeyA'){ state.input.left = false; }
@@ -367,22 +386,18 @@ function nextLevel(){
   canvas.addEventListener('touchstart', (e)=>{ if(!state.running){ startGame(); } setPointerControl(e.touches[0].clientX); }, {passive:true});
   canvas.addEventListener('touchmove',  (e)=> setPointerControl(e.touches[0].clientX), {passive:true});
   canvas.addEventListener('touchend',   ()=> state.paddle.targetX = null);
-  
-  // 📱 スマホ＆PC 共通：キャンバスタップで一時停止／再開
-  canvas.addEventListener('click', () => {
-    if (state.running) {
-      state.paused = !state.paused;
-      if (state.paused) {
-        // オーバーレイは出さず、代わりに半透明メッセージだけ描画する
-        ovTitle.textContent = '一時停止中';
-        ovDesc.innerHTML = '画面をタップすると再開します';
-        overlay.classList.remove('hidden');
-        startBtn.style.display = 'none';   // ← スタートボタンは非表示
-      } else {
-        overlay.classList.add('hidden');
-      }
+
+// 📱 スマホ＆PC 共通：キャンバスタップで一時停止／再開
+canvas.addEventListener('click', () => {
+  if (state.running) {
+    state.paused = !state.paused;
+    if (state.paused) {
+      pauseMsg.classList.remove('hidden');  // 一時停止専用オーバーレイを表示
+    } else {
+      pauseMsg.classList.add('hidden');     // 再開したら隠す
     }
-  });
+  }
+});
 
 // スタートボタンの共通動作
 startBtn.addEventListener('click', ()=>{
@@ -402,6 +417,3 @@ startBtn.addEventListener('click', ()=>{
 </script>
 </body>
 </html>
-
-
-
