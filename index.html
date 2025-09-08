@@ -289,18 +289,17 @@
   }
   function hideOverlay(){ overlay.classList.add('hidden'); }
 
-function startGame(initial=true){
+function startGame(){
+  // ★ ここで初期化するのは「完全リセット」の時だけ
+  state.level = 1;
+  state.lives = 3;
+  state.score = 0;
+
   state.running = true;
   state.paused = false;
 
-  if(initial){
-    state.level = 1;   // 初期化はここだけ
-    state.lives = 3;
-    state.score = 0;
-  }
-
   updateHUD();
-  resetLevel(); // ← ここでは current state.level を使うので Lv1から開始
+  resetLevel(); // ← Lv1をセット
   hideOverlay();
   state.lastTime = performance.now();
   requestAnimationFrame(loop);
@@ -315,16 +314,15 @@ function levelUp(){
     true
   );
 
-  // ★ ここでは startGame ではなく nextLevel を呼ぶ
   startBtn.onclick = () => {
     if(actx.state === 'suspended'){ actx.resume(); }
-    nextLevel();
+    nextLevel(); // ← ここではstartGameを呼ばない！
   };
 }
 
 function nextLevel(){
-  resetLevel(true);
-  updateHUD();          // HUD更新
+  resetLevel(true); // ← state.levelの値をそのまま使用
+  updateHUD();
   state.paused = false;
   hideOverlay();
   state.lastTime = performance.now();
