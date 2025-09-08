@@ -289,8 +289,8 @@
   }
   function hideOverlay(){ overlay.classList.add('hidden'); }
 
+
 function startGame(){
-  // ★ ここで初期化するのは「完全リセット」の時だけ
   state.level = 1;
   state.lives = 3;
   state.score = 0;
@@ -298,8 +298,8 @@ function startGame(){
   state.running = true;
   state.paused = false;
 
-  updateHUD();
-  resetLevel(); // ← Lv1をセット
+  resetLevel();   // Lv1のブロック配置
+  updateHUD();    // ← 配置後にHUD更新
   hideOverlay();
   state.lastTime = performance.now();
   requestAnimationFrame(loop);
@@ -321,8 +321,8 @@ function levelUp(){
 }
 
 function nextLevel(){
-  resetLevel(true); // ← state.levelの値をそのまま使用
-  updateHUD();
+  resetLevel(true);  // 現在の level に応じてブロック配置
+  updateHUD();       // ← ここを追加
   state.paused = false;
   hideOverlay();
   state.lastTime = performance.now();
