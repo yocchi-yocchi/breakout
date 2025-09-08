@@ -338,12 +338,25 @@ function nextLevel(){
   state.lastTime = performance.now();
   requestAnimationFrame(loop);
 }
+  
+function gameOver(){
+  state.running = false;
+  state.paused = true;
 
-  function gameOver(){
-    state.running = false; state.paused = true;
-    showOverlay('ゲームオーバー', `スコア：<b>${formatScore(state.score)}</b><br>もう一度挑戦しますか？`, true);
-    beep('triangle', 200, 0.3, 0.06);
-  }
+  showOverlay(
+    'ゲームオーバー',
+    `スコア：<b>${formatScore(state.score)}</b><br>もう一度挑戦しますか？`,
+    true
+  );
+
+  beep('triangle', 200, 0.3, 0.06);
+
+  // ★ ゲームオーバー時に再スタート用イベントを設定
+  startBtn.onclick = () => {
+    if(actx.state === 'suspended'){ actx.resume(); }
+    startGame(true);  // 初期化して最初から
+  };
+}
 
   function loop(now){
     if(!state.running){ return; }
@@ -376,15 +389,16 @@ function nextLevel(){
   canvas.addEventListener('touchmove',  (e)=> setPointerControl(e.touches[0].clientX), {passive:true});
   canvas.addEventListener('touchend',   ()=> state.paddle.targetX = null);
 
-// 初回開始用
-startBtn.addEventListener('click', ()=>{
-    if(actx.state === 'suspended'){ actx.resume(); }
-    startGame(true);   // ← 初回は必ず initial=true を渡す
-}, { once: true });  // ← 一度だけ有効にする
+  // 初回開始用
+  startBtn.addEventListener('click', ()=>{
+      if(actx.state === 'suspended'){ actx.resume(); }
+      startGame(true);
+  });
 
   showOverlay('準備OK？', '左右キー（<span class="kbd">←</span>/<span class="kbd">→</span>）、<span class="kbd">A</span>/<span class="kbd">D</span>、マウス移動、またはスワイプでパドルを操作。<br>ボールを落とさずに全ブロックを壊そう！<br><span class="kbd">スペース</span>で一時停止／再開。');
 })();
 </script>
 </body>
 </html>
+
 
