@@ -40,7 +40,12 @@
     }
     .title h1 { font-size: clamp(18px, 2.4vw, 22px); margin: 0; letter-spacing: .5px; }
     .title .meta { font-size: 12px; color: var(--muted); }
-    .canvas-box { position: relative; width: 100%; aspect-ratio: 16 / 9; }
+.canvas-box {
+      position: relative;
+      width: 100%;
+      /* aspect-ratio を削除して縦長も許可 */
+      height: min(80vh, 600px); /* 画面の80%の高さ or 600pxまで */
+}
     canvas { width: 100%; height: 100%; display: block; background: linear-gradient(180deg, #0f1220 0%, #0b0d17 100%); border-radius: 12px; }
     .hud { position: absolute; inset: 10px 12px auto 12px; display: flex; justify-content: space-between; font-variant-numeric: tabular-nums; }
     .hud .pill { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); padding: 6px 10px; border-radius: 999px; font-size: 12px; }
@@ -160,7 +165,7 @@
     if(hard){ state.ball.vx *= 1.08; state.ball.vy *= 1.08; }
     const cols = Math.max(6, Math.min(12, Math.floor(W / 60)));
     const rows = 5 + Math.min(4, state.level);
-    const pad = 8; const top = 48; const left = 14; const right = 14;
+    const pad = 8; const top = 72; const left = 14; const right = 14;
     const areaW = W - left - right;
     const brickW = Math.floor((areaW - (cols-1)*pad) / cols);
     const brickH = Math.max(16, Math.min(24, Math.floor(H * 0.035)));
