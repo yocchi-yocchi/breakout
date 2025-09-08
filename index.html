@@ -373,9 +373,13 @@ function nextLevel(){
     if (state.running) {
       state.paused = !state.paused;
       if (state.paused) {
-        showOverlay('一時停止中', '画面をタップすると再開します', false);
+        // オーバーレイは出さず、代わりに半透明メッセージだけ描画する
+        ovTitle.textContent = '一時停止中';
+        ovDesc.innerHTML = '画面をタップすると再開します';
+        overlay.classList.remove('hidden');
+        startBtn.style.display = 'none';   // ← スタートボタンは非表示
       } else {
-        hideOverlay();
+        overlay.classList.add('hidden');
       }
     }
   });
@@ -398,5 +402,6 @@ startBtn.addEventListener('click', ()=>{
 </script>
 </body>
 </html>
+
 
 
