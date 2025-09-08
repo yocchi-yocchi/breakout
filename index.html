@@ -289,32 +289,24 @@
   }
   function hideOverlay(){ overlay.classList.add('hidden'); }
 
-function startGame(initial=true){
+// ゲームを最初から開始する（Lv1に戻す）
+function startGame(){
+  state.level = 1;
+  state.lives = 3;
+  state.score = 0;
+
   state.running = true;
   state.paused = false;
 
-  if(initial){
-    state.level = 1;   // ★最初だけリセット
-    state.lives = 3;
-    state.score = 0;
-  }
-
+  resetLevel();   // ← この時点で state.level=1 を使う
   updateHUD();
-  resetLevel();
   hideOverlay();
   state.lastTime = performance.now();
   requestAnimationFrame(loop);
   beep('sine', 660, 0.08, 0.05);
-
-  // ★ ここは「再スタート用」のみにする
-  if(initial){
-    startBtn.onclick = () => {
-      if(actx.state === 'suspended'){ actx.resume(); }
-      startGame(true); // ← ここは「ゲームオーバー後のリスタート」でだけ必要
-    };
-  }
 }
 
+// 全ブロック破壊時に呼ばれる
 function levelUp(){
   state.paused = true;
   showOverlay(
@@ -323,27 +315,41 @@ function levelUp(){
     true
   );
 
-  // ★ ここでは startGame ではなく nextLevel を呼ぶ
+  // ★ここでstartGameを呼ばず、次レベル用関数を呼ぶ
   startBtn.onclick = () => {
     if(actx.state === 'suspended'){ actx.resume(); }
     nextLevel();
   };
 }
 
+// 次のレベルを開始する（state.levelはそのまま利用）
 function nextLevel(){
-  resetLevel(true);
-  updateHUD();          // HUD更新
+  resetLevel(true);   // state.level に応じてブロック生成
+  updateHUD();        // 表示を更新
   state.paused = false;
   hideOverlay();
   state.lastTime = performance.now();
   requestAnimationFrame(loop);
 }
+  
+// ゲームオーバー時
+function gameOver(){
+  state.running = false;
+  state.paused = true;
 
-  function gameOver(){
-    state.running = false; state.paused = true;
-    showOverlay('ゲームオーバー', `スコア：<b>${formatScore(state.score)}</b><br>もう一度挑戦しますか？`, true);
-    beep('triangle', 200, 0.3, 0.06);
-  }
+  showOverlay(
+    'ゲームオーバー',
+    `スコア：<b>${formatScore(state.score)}</b><br>もう一度挑戦しますか？`,
+    true
+  );
+
+  beep('triangle', 200, 0.3, 0.06);
+
+  startBtn.onclick = () => {
+    if(actx.state === 'suspended'){ actx.resume(); }
+    startGame();  // ★完全リセットしてLv1から
+  };
+}
 
   function loop(now){
     if(!state.running){ return; }
@@ -378,9 +384,9 @@ function nextLevel(){
 
 // 初回開始用
 startBtn.addEventListener('click', ()=>{
-    if(actx.state === 'suspended'){ actx.resume(); }
-    startGame(true);   // ← 初回は必ず initial=true を渡す
-}, { once: true });  // ← 一度だけ有効にする
+      if(actx.state === 'suspended'){ actx.resume(); }
+      startGame(true);
+});
 
   showOverlay('準備OK？', '左右キー（<span class="kbd">←</span>/<span class="kbd">→</span>）、<span class="kbd">A</span>/<span class="kbd">D</span>、マウス移動、またはスワイプでパドルを操作。<br>ボールを落とさずに全ブロックを壊そう！<br><span class="kbd">スペース</span>で一時停止／再開。');
 })();
