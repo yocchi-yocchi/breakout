@@ -367,6 +367,18 @@ function nextLevel(){
   canvas.addEventListener('touchstart', (e)=>{ if(!state.running){ startGame(); } setPointerControl(e.touches[0].clientX); }, {passive:true});
   canvas.addEventListener('touchmove',  (e)=> setPointerControl(e.touches[0].clientX), {passive:true});
   canvas.addEventListener('touchend',   ()=> state.paddle.targetX = null);
+  
+  // 📱 スマホ＆PC 共通：キャンバスタップで一時停止／再開
+  canvas.addEventListener('click', () => {
+    if (state.running) {
+      state.paused = !state.paused;
+      if (state.paused) {
+        showOverlay('一時停止中', '画面をタップすると再開します', false);
+      } else {
+        hideOverlay();
+      }
+    }
+  });
 
 // スタートボタンの共通動作
 startBtn.addEventListener('click', ()=>{
@@ -386,4 +398,5 @@ startBtn.addEventListener('click', ()=>{
 </script>
 </body>
 </html>
+
 
