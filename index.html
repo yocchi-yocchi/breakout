@@ -399,25 +399,30 @@ function togglePause() {
   }
 }
 
-// PC用クリック（キャンバス）
+// PC用クリック
 canvas.addEventListener('click', togglePause);
 
-// スマホ用タップ（キャンバス）
+// スマホ用タップ（キャンバス → 実行中のみパドル操作）
 canvas.addEventListener('touchstart', (e) => {
-  if (e.touches.length === 1) {
-    togglePause();
+  if (!state.running) {
+    startGame();
+  } else if (!state.paused) {
+    // 動作中のみパドル操作に使う
+    setPointerControl(e.touches[0].clientX);
   }
 }, { passive: true });
 
-// 🟢 追加：pauseMsg 自体もタップ／クリックで再開できるようにする
-pauseMsg.addEventListener('click', () => {
-  if (state.paused) togglePause();
-});
+// 🟢 pauseMsg のタップで再開（スマホ対応）
 pauseMsg.addEventListener('touchstart', (e) => {
   if (state.paused && e.touches.length === 1) {
     togglePause();
   }
 }, { passive: true });
+
+// PCでも pauseMsg 上でクリックしたら再開できるように
+pauseMsg.addEventListener('click', () => {
+  if (state.paused) togglePause();
+});
 
 // スタートボタンの共通動作
 startBtn.addEventListener('click', ()=>{
