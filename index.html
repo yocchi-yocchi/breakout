@@ -294,25 +294,17 @@ function startGame(initial=true){
   state.paused = false;
 
   if(initial){
-    state.level = 1;   // ★最初だけリセット
+    state.level = 1;   // 初期化はここだけ
     state.lives = 3;
     state.score = 0;
   }
 
   updateHUD();
-  resetLevel();
+  resetLevel(); // ← ここでは current state.level を使うので Lv1から開始
   hideOverlay();
   state.lastTime = performance.now();
   requestAnimationFrame(loop);
   beep('sine', 660, 0.08, 0.05);
-
-  // ★ ここは「再スタート用」のみにする
-  if(initial){
-    startBtn.onclick = () => {
-      if(actx.state === 'suspended'){ actx.resume(); }
-      startGame(true); // ← ここは「ゲームオーバー後のリスタート」でだけ必要
-    };
-  }
 }
 
 function levelUp(){
@@ -338,8 +330,8 @@ function nextLevel(){
   state.lastTime = performance.now();
   requestAnimationFrame(loop);
 }
-  
-function gameOver(){
+
+  function gameOver(){
   state.running = false;
   state.paused = true;
 
@@ -351,10 +343,9 @@ function gameOver(){
 
   beep('triangle', 200, 0.3, 0.06);
 
-  // ★ ゲームオーバー時に再スタート用イベントを設定
   startBtn.onclick = () => {
     if(actx.state === 'suspended'){ actx.resume(); }
-    startGame(true);  // 初期化して最初から
+    startGame(true);  // ★ 必ず初期化してLv1から再開
   };
 }
 
@@ -389,16 +380,14 @@ function gameOver(){
   canvas.addEventListener('touchmove',  (e)=> setPointerControl(e.touches[0].clientX), {passive:true});
   canvas.addEventListener('touchend',   ()=> state.paddle.targetX = null);
 
-  // 初回開始用
-  startBtn.addEventListener('click', ()=>{
+// 初回開始用
+startBtn.addEventListener('click', ()=>{
       if(actx.state === 'suspended'){ actx.resume(); }
       startGame(true);
-  });
+});
 
   showOverlay('準備OK？', '左右キー（<span class="kbd">←</span>/<span class="kbd">→</span>）、<span class="kbd">A</span>/<span class="kbd">D</span>、マウス移動、またはスワイプでパドルを操作。<br>ボールを落とさずに全ブロックを壊そう！<br><span class="kbd">スペース</span>で一時停止／再開。');
 })();
 </script>
 </body>
 </html>
-
-
