@@ -289,8 +289,8 @@
   }
   function hideOverlay(){ overlay.classList.add('hidden'); }
 
+// ゲームを最初から開始する（Lv1に戻す）
 function startGame(){
-  // ★完全リセット用：レベル・スコア・ライフを初期化
   state.level = 1;
   state.lives = 3;
   state.score = 0;
@@ -298,7 +298,7 @@ function startGame(){
   state.running = true;
   state.paused = false;
 
-  resetLevel();   // Lv1のブロックを生成
+  resetLevel();   // ← この時点で state.level=1 を使う
   updateHUD();
   hideOverlay();
   state.lastTime = performance.now();
@@ -306,6 +306,7 @@ function startGame(){
   beep('sine', 660, 0.08, 0.05);
 }
 
+// 全ブロック破壊時に呼ばれる
 function levelUp(){
   state.paused = true;
   showOverlay(
@@ -314,21 +315,24 @@ function levelUp(){
     true
   );
 
+  // ★ここでstartGameを呼ばず、次レベル用関数を呼ぶ
   startBtn.onclick = () => {
     if(actx.state === 'suspended'){ actx.resume(); }
-    nextLevel(); // ★もうstartGameを呼ばない
+    nextLevel();
   };
 }
 
+// 次のレベルを開始する（state.levelはそのまま利用）
 function nextLevel(){
-  resetLevel(true); // state.levelに応じた配置
-  updateHUD();      // 表示更新
+  resetLevel(true);   // state.level に応じてブロック生成
+  updateHUD();        // 表示を更新
   state.paused = false;
   hideOverlay();
   state.lastTime = performance.now();
   requestAnimationFrame(loop);
 }
   
+// ゲームオーバー時
 function gameOver(){
   state.running = false;
   state.paused = true;
@@ -343,7 +347,7 @@ function gameOver(){
 
   startBtn.onclick = () => {
     if(actx.state === 'suspended'){ actx.resume(); }
-    startGame(); // ★ゲームオーバー時だけ完全リセット
+    startGame();  // ★完全リセットしてLv1から
   };
 }
 
