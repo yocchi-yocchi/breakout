@@ -53,10 +53,10 @@
       position: absolute; inset: 0; display: grid; place-items: center; text-align: center;
       background: radial-gradient(600px 300px at 50% 20%, rgba(90,169,255,.12), rgba(0,0,0,.4));
       backdrop-filter: blur(2px);
-      z-index: 10;
+      z-index: 5;   /* ← HUD より下げる */
     }
     .overlay.hidden { display: none; }
-    .overlay .panel { background: var(--card); border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 18px; width: min(92%, 520px); box-shadow: 0 20px 50px rgba(0,0,0,.45);}    
+    .overlay .panel { background: var(--card); border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 18px; width: min(92%, 520px); box-shadow: 0 20px 50px rgba(0,0,0,.45); z-index: 30; position: relative;}    
     .overlay h2 { margin: 0 0 8px; font-size: 20px; }
     .overlay p { margin: 0 0 14px; color: var(--muted); font-size: 14px; line-height: 1.6; }
     .overlay .btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
@@ -427,4 +427,5 @@ startBtn.addEventListener('click', ()=>{
 </script>
 </body>
 </html>
+
 
