@@ -188,7 +188,8 @@ pauseBtn.addEventListener('click', () => {
       for(let c=0;c<cols;c++){
         const x = left + c*(brickW+pad);
         const y = top + r*(brickH+pad);
-        const hp = 1 + Math.floor(Math.max(0, state.level-1)/3);
+        // 修正後（常にhp=1固定）
+        const hp = 1;
         state.bricks.push({ x, y, w: brickW, h: brickH, hp, color: palette[r % palette.length]});
       }
     }
@@ -427,6 +428,7 @@ startBtn.addEventListener('click', ()=>{
 </script>
 </body>
 </html>
+
 
 
 
